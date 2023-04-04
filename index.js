@@ -44,7 +44,9 @@ app.use(function (req, res, next) {
   next();
 });
 import swaggerUi from "swagger-ui-express";
-import swaggerDocument from "./swagger.json" assert { type: "json" };
+// use this on developement
+// import swaggerDocument from "./swagger.json" assert { type: "json" };
+import swaggerDocument from "./swagger.json";
 app.get("/health", (req, res) => {
   res.status(200).send(" blockroll backend is up and running");
 });
