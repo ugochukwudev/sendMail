@@ -1,0 +1,107 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Tech X mail Note you can't send a text and html. pick one",
+    "version": "1.0.0",
+    "title": "Tech x Mail",
+    "contact": {
+      "email": "paulambrose5002@gmail.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "schemes": ["http"],
+  "host": "baseUrL",
+  "basePath": "/api",
+  "paths": {
+    "/sendmail": {
+      "post": {
+        "summary": "Send mail ",
+        "description": "Send mail . containing any details",
+        "produces": ["application/json"],
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "task object",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "task": {
+                  "type": "object"
+                },
+                "name": {
+                  "type": "string",
+                  "value": "kkk"
+                },
+                "email": {
+                  "type": "string",
+                  "value": "kkk"
+                },
+                "subject": {
+                  "type": "string",
+                  "value": "kkk"
+                },
+                "text": {
+                  "type": "string",
+                  "value": "kkk"
+                },
+                "html": {
+                  "type": "string",
+                  "value": "kkk"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/success"
+            }
+          },
+          "400": {
+            "description": "Invalid status value",
+            "schema": {
+              "$ref": "#/definitions/InvalidResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "success": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "value": "Email sent successfully"
+        },
+
+        "status": {
+          "type": "number",
+          "value": 200
+        }
+      }
+    },
+    "InvalidResponse": {
+      "type": "object",
+      "properties": {
+        "statusCode": {
+          "type": "number",
+          "value": "400"
+        },
+        "message": {
+          "type": "string",
+          "value": "incomplete data"
+        }
+      }
+    }
+  }
+}
