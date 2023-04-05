@@ -1,12 +1,12 @@
-import express from "express";
-import dotenv from "dotenv";
+const express = require("express");
+const dotenv = require("dotenv");
 //import connectDB from "./db.js";
-import morgan from "morgan";
-import cors from "cors";
-import session from "express-session";
-import swaggerJsDoc from "swagger-jsdoc";
-import swaggerUI from "swagger-ui-express";
-import nodemailer from "nodemailer";
+const morgan = require("morgan");
+const cors = require("cors");
+const session = require("express-session");
+const swaggerJsDoc = require("swagger-jsdoc");
+const swaggerUI = require("swagger-ui-express");
+const nodemailer = require("nodemailer");
 
 dotenv.config();
 
@@ -43,9 +43,10 @@ app.use(function (req, res, next) {
   );
   next();
 });
-import swaggerUi from "swagger-ui-express";
+const swaggerUi = require("swagger-ui-express");
 // use this on developement
-import swaggerDocument from "./swagger.json" assert { type: "json" };
+
+const swaggerDocument = require("./swagger.json");
 //import swaggerDocument from "./swagger.json";
 app.get("/health", (req, res) => {
   res.status(200).send(" blockroll backend is up and running");
