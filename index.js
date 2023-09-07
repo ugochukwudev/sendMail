@@ -69,7 +69,7 @@ app.post("/sendmail", (req, res) => {
     service: "gmail", //name of email provider
     auth: {
       user: "managetechx@gmail.com", // sender's gmail id
-      pass: "udhfcivajqieumte", // sender password
+      pass: process.env.pass, // sender password
     },
   });
   const from = `Techx Mail Service `;
@@ -77,7 +77,7 @@ app.post("/sendmail", (req, res) => {
     from: from,
     to: mail,
     subject: `${subject} `,
-    text: text,
+    text: text || null,
     html: html || null,
   };
 
