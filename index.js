@@ -61,7 +61,7 @@ app.get("*", (req, res) => {
 });
 app.post("/sendmail", (req, res) => {
   const { mail, subject, text, html, name } = req.body;
-  if (!mail || !subject || !text || !name) {
+  if (!mail || !subject || !name) {
     res.status(400).send({ message: "incomplete data" });
     return;
   }
