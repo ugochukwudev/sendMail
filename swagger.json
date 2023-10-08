@@ -13,8 +13,8 @@
     }
   },
   "schemes": ["http"],
-  "host": "baseUrL",
-  "basePath": "/api",
+  "host": "http://techxmail.ivara.co.uk",
+  "basePath": "/",
   "paths": {
     "/sendmail": {
       "post": {
@@ -26,7 +26,7 @@
           {
             "in": "body",
             "name": "body",
-            "description": "task object",
+            "description": "params.",
             "required": true,
             "schema": {
               "type": "object",
