@@ -53,7 +53,7 @@ app.get("/health", (req, res) => {
 });
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.get("/", (req, res) => {
-  res.status(200).send(`<h1>wrong url on our innnocent blockroll"</h1>`);
+  res.status(200).send(`<h1>Welcome to tehcxmail</h1>`);
 });
 
 app.get("*", (req, res) => {
@@ -85,6 +85,7 @@ app.post("/sendmail", (req, res) => {
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
         console.log(error);
+        res.status(500).send({ message: error });
       } else {
         console.log("Email sent: " + info.response);
       }
