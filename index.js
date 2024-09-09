@@ -48,7 +48,7 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
 
 app.get("/health", (req, res) => {
-  res.status(200).send(" blockroll backend is up and running");
+  res.status(200).send(" sendmail backend is up and running");
 });
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
