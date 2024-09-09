@@ -6,6 +6,7 @@ const session = require("express-session");
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUI = require("swagger-ui-express");
 const nodemailer = require("nodemailer");
+const https = require("https"); // Import the https module
 
 dotenv.config();
 
@@ -113,17 +114,25 @@ app.post("/sendmail", (req, res) => {
   }
 });
 
-// Function to check the health of the server every 2 minutes using fetch
+// Function to check the health of the server every 2 minutes using https
 const healthCheckInterval = setInterval(() => {
-  fetch("https://techxmail.onrender.com/health")
-    .then(response => response.text())
-    .then(data => {
-      console.log(`Health check passed: ${data}`);
-    })
-    .catch(error => {
-      console.error("Health check failed:", error.message);
-      // You can add a response or log the error here
+  https.get("https://techxmail.onrender.com/health", (resp) => {
+    let data = '';
+
+    // A chunk of data has been received
+    resp.on('data', (chunk) => {
+      data += chunk;
     });
+
+    // The whole response has been received
+    resp.on('end', () => {
+      console.log(`Health check passed: ${data}`);
+    });
+
+  }).on("error", (error) => {
+    console.error("Health check failed:", error.message);
+    // You can add a response or log the error here
+  });
 }, 120000); // 120000 milliseconds = 2 minutes
 
 // Clearing the interval on server shutdown
