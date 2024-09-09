@@ -1,6 +1,5 @@
 const express = require("express");
 const dotenv = require("dotenv");
-//import connectDB from "./db.js";
 const morgan = require("morgan");
 const cors = require("cors");
 const session = require("express-session");
@@ -43,36 +42,53 @@ app.use(function (req, res, next) {
   );
   next();
 });
-const swaggerUi = require("swagger-ui-express");
-// use this on developement
 
+const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
-//import swaggerDocument from "./swagger.json";
+
 app.get("/health", (req, res) => {
   res.status(200).send(" blockroll backend is up and running");
 });
+
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 app.get("/", (req, res) => {
-  res.status(200).send(`<h1>Welcome to tehcxmail</h1>`);
+  res.status(200).send(`<h1>Welcome to techxmail</h1>`);
 });
 
 app.get("*", (req, res) => {
   res.status(200).send(`<b>Not found</b>`);
 });
+
+// Email validation function using regex
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
 app.post("/sendmail", (req, res) => {
   const { mail, subject, text, html, name } = req.body;
-  if (!mail || !subject || !name) {
-    res.status(400).send({ message: "incomplete data" });
+
+  // Validate email format
+  if (!isValidEmail(mail)) {
+    res.status(400).send({ message: "Invalid email format" });
     return;
   }
+
+  if (!mail || !subject || !name) {
+    res.status(400).send({ message: "Incomplete data" });
+    return;
+  }
+
   var transporter = nodemailer.createTransport({
-    service: "gmail", //name of email provider
+    service: "gmail", // name of email provider
     auth: {
       user: "managetechx@gmail.com", // sender's gmail id
       pass: process.env.pass, // sender password
     },
   });
-  const from = `Techx Mail Service `;
+
+  const from = `Techx Mail Service`;
   var mailOptions = {
     from: from,
     to: mail,
@@ -85,16 +101,38 @@ app.post("/sendmail", (req, res) => {
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
         console.log(error);
-        res.status(500).send({ message: error });
+        res.status(500).send({ message: error.message });
       } else {
         console.log("Email sent: " + info.response);
+        res.status(200).send({ message: "Email sent successfully" });
       }
     });
   } catch (e) {
     console.log(e);
+    res.status(500).send({ message: e.message });
   }
-  res.status(200).send({ message: "Email sent successfully" });
 });
+
+// Function to check the health of the server every 2 minutes using fetch
+const healthCheckInterval = setInterval(() => {
+  fetch("https://techxmail.onrender.com/health")
+    .then(response => response.text())
+    .then(data => {
+      console.log(`Health check passed: ${data}`);
+    })
+    .catch(error => {
+      console.error("Health check failed:", error.message);
+      // You can add a response or log the error here
+    });
+}, 120000); // 120000 milliseconds = 2 minutes
+
+// Clearing the interval on server shutdown
+process.on('SIGINT', () => {
+  clearInterval(healthCheckInterval);
+  console.log('Health check interval cleared.');
+  process.exit();
+});
+
 const port = process.env.PORT || 5000;
 
 app.listen(port, console.log(`Server running on port ${port}`));
