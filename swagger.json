@@ -13,7 +13,7 @@
     }
   },
   "schemes": ["http"],
-  "host": "http://techxmail.ivara.co.uk",
+  "host": "https://techxmail.onrender.com/api-docs/",
   "basePath": "/",
   "paths": {
     "/sendmail": {
