@@ -12,8 +12,8 @@
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
   },
-  "schemes": ["http"],
-  "host": "https://techxmail.onrender.com/api-docs/",
+  "schemes": ["http", "https"],
+  "host": "localhost:3000",
   "basePath": "/",
   "paths": {
     "/sendmail": {
@@ -21,39 +21,50 @@
         "summary": "Send mail ",
         "description": "Send mail . containing any details",
         "produces": ["application/json"],
-        "consumes": ["application/json"],
+        "consumes": ["multipart/form-data"],
         "parameters": [
           {
-            "in": "body",
-            "name": "body",
-            "description": "params.",
+            "in": "formData",
+            "name": "name",
+            "type": "string",
             "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-               
-                "name": {
-                  "type": "string",
-                  "value": "kkk"
-                },
-                "mail": {
-                  "type": "string",
-                  "value": "kkk"
-                },
-                "subject": {
-                  "type": "string",
-                  "value": "kkk"
-                },
-                "text": {
-                  "type": "string",
-                  "value": "kkk"
-                },
-                "html": {
-                  "type": "string",
-                  "value": "kkk"
-                }
-              }
-            }
+            "description": "Sender name"
+          },
+          {
+            "in": "formData",
+            "name": "mail",
+            "type": "string",
+            "required": true,
+            "description": "Recipient email address"
+          },
+          {
+            "in": "formData",
+            "name": "subject",
+            "type": "string",
+            "required": true,
+            "description": "Email subject"
+          },
+          {
+            "in": "formData",
+            "name": "text",
+            "type": "string",
+            "required": false,
+            "description": "Plain text content (optional if html is provided)"
+          },
+          {
+            "in": "formData",
+            "name": "html",
+            "type": "string",
+            "required": false,
+            "description": "HTML content (optional if text is provided)"
+          },
+          {
+            "in": "formData",
+            "name": "attachments",
+            "type": "file",
+            "required": false,
+            "description": "File attachments (PDF, TXT, DOC, DOCX, JPG, PNG - max 5MB each)",
+            "allowMultiple": true
           }
         ],
         "responses": {
