@@ -1,11 +1,23 @@
 const { transporter, defaultFrom } = require('../config/email');
-const { cleanupFiles } = require('../utils/validation');
+const { uploadBuffer, cloudinary } = require('../config/cloudinary');
 
 async function sendEmail({ mail, subject, text, html, files }) {
-  const attachments = files ? files.map(file => ({
-    filename: file.originalname,
-    path: file.path
-  })) : [];
+  // Upload files to Cloudinary if present
+  const attachments = [];
+  if (files && files.length > 0) {
+    for (const file of files) {
+      try {
+        // Just use the buffer directly from multer
+        attachments.push({
+          filename: file.originalname,
+          content: file.buffer
+        });
+      } catch (error) {
+        console.error('File handling error:', error);
+        throw new Error('File processing failed');
+      }
+    }
+  }
 
   const mailOptions = {
     from: defaultFrom,
@@ -18,10 +30,9 @@ async function sendEmail({ mail, subject, text, html, files }) {
 
   try {
     const info = await transporter.sendMail(mailOptions);
-    cleanupFiles(files);
     return { success: true, response: info.response };
   } catch (error) {
-    cleanupFiles(files);
+    console.error('Email sending error:', error);
     throw error;
   }
 }
