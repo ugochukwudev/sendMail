@@ -33,31 +33,31 @@
           {
             "in": "formData",
             "name": "mail",
-            "type": "string",
+                  "type": "string",
             "required": true,
             "description": "Recipient email address"
-          },
+                },
           {
             "in": "formData",
             "name": "subject",
-            "type": "string",
+                  "type": "string",
             "required": true,
             "description": "Email subject"
-          },
+                },
           {
             "in": "formData",
             "name": "text",
-            "type": "string",
+                  "type": "string",
             "required": false,
             "description": "Plain text content (optional if html is provided)"
-          },
+                },
           {
             "in": "formData",
             "name": "html",
-            "type": "string",
+                  "type": "string",
             "required": false,
             "description": "HTML content (optional if text is provided)"
-          },
+                },
           {
             "in": "formData",
             "name": "attachments",
