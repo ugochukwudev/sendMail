@@ -9,30 +9,26 @@ const emailConfig = {
     user: "managetechx@gmail.com",
     pass: process.env.pass,
   },
-  // Connection timeout settings
-  connectionTimeout: 10000, // 10 seconds
-  greetingTimeout: 10000,
-  socketTimeout: 10000,
+  // Connection timeout settings - increased for production
+  connectionTimeout: 30000, // 30 seconds
+  greetingTimeout: 30000,
+  socketTimeout: 30000,
   // Retry settings
-  pool: true,
-  maxConnections: 1,
-  maxMessages: 3,
+  pool: false, // Disable pooling for better compatibility
   // TLS options
   tls: {
-    rejectUnauthorized: false
-  }
+    rejectUnauthorized: false,
+    ciphers: 'SSLv3'
+  },
+  // Debug mode (set to false in production)
+  debug: process.env.NODE_ENV === 'development',
+  logger: process.env.NODE_ENV === 'development'
 };
 
 const transporter = nodemailer.createTransport(emailConfig);
 
-// Verify connection on startup
-transporter.verify(function (error, success) {
-  if (error) {
-    console.log('Email transporter verification error:', error);
-  } else {
-    console.log('Email transporter is ready to send messages');
-  }
-});
+// Don't verify on startup - verify only when sending
+// This prevents connection timeout errors on server startup
 
 module.exports = {
   transporter,
