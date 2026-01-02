@@ -1,21 +1,14 @@
 const { transporter, defaultFrom } = require('../config/email');
-const { uploadBuffer, cloudinary } = require('../config/cloudinary');
 
 async function sendEmail({ mail, subject, text, html, files }) {
-  // Upload files to Cloudinary if present
+  // Prepare attachments if files were uploaded
   const attachments = [];
   if (files && files.length > 0) {
     for (const file of files) {
-      try {
-        // Just use the buffer directly from multer
-        attachments.push({
-          filename: file.originalname,
-          content: file.buffer
-        });
-      } catch (error) {
-        console.error('File handling error:', error);
-        throw new Error('File processing failed');
-      }
+      attachments.push({
+        filename: file.originalname,
+        content: file.buffer
+      });
     }
   }
 
@@ -28,13 +21,34 @@ async function sendEmail({ mail, subject, text, html, files }) {
     attachments
   };
 
-  try {
-    const info = await transporter.sendMail(mailOptions);
-    return { success: true, response: info.response };
-  } catch (error) {
-    console.error('Email sending error:', error);
-    throw error;
+  // Retry logic for production
+  const maxRetries = 3;
+  let lastError;
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(`Attempting to send email (attempt ${attempt}/${maxRetries})...`);
+      const info = await transporter.sendMail(mailOptions);
+      console.log('Email sent successfully:', info.response);
+      return { success: true, response: info.response };
+    } catch (error) {
+      lastError = error;
+      console.error(`Email sending attempt ${attempt} failed:`, error.message);
+      
+      // If it's a connection timeout and not the last attempt, wait before retrying
+      if (attempt < maxRetries && (error.code === 'ETIMEDOUT' || error.code === 'ECONNRESET' || error.code === 'ESOCKETTIMEDOUT')) {
+        const waitTime = attempt * 2000; // Exponential backoff: 2s, 4s, 6s
+        console.log(`Waiting ${waitTime}ms before retry...`);
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+      } else {
+        // For other errors or last attempt, throw immediately
+        throw error;
+      }
+    }
   }
+
+  // If all retries failed
+  throw lastError;
 }
 
 module.exports = {
